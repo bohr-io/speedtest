@@ -5,7 +5,7 @@
 import { computed, defineProps, onMounted, ref } from "vue";
 import { Loader } from "@googlemaps/js-api-loader";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyDJgsrkslJjQjop3nxhLoRt-XdubE-3_y4";
+const GOOGLE_MAPS_API_KEY = "";
 
 import styles from "../mapStyle.js";
 import userSvgMarker from "../assets/svg/marker-orange.svg";
@@ -23,10 +23,13 @@ export default {
       lng: props.userPosition.lng,
     }));
 
-    const serverPos = computed(() => (props.serverPosition && {
-      lat: props.serverPosition.lat,
-      lng: props.serverPosition.lng,
-    }));
+    const serverPos = computed(
+      () =>
+        props.serverPosition && {
+          lat: props.serverPosition.lat,
+          lng: props.serverPosition.lng,
+        }
+    );
 
     const userMarkerIcon = ref(null);
     const serverMarkerIcon = ref(null);
@@ -57,7 +60,7 @@ export default {
         icon: userMarkerIcon.value,
       });
 
-      if (serverPos) {
+      if (serverPos.value) {
         new google.maps.Marker({
           position: serverPos.value,
           map: map.value,
@@ -68,14 +71,14 @@ export default {
           map: map.value,
           path: [userPos.value, serverPos.value],
           geodesic: true,
-          strokeColor: '#FF0000'
+          strokeColor: "#FF0000",
         });
       }
 
       const bounds = new google.maps.LatLngBounds();
 
       bounds.extend(userPos.value);
-      serverPos && bounds.extend(serverPos.value);
+      serverPos.value && bounds.extend(serverPos.value);
 
       map.value.fitBounds(bounds);
     });
